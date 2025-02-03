@@ -14,6 +14,12 @@ import java.util.List;
 @NoArgsConstructor
 public class Team {
 
+    public Team(String name, Integer commission, List<Player> players) {
+        this.name = name;
+        this.commission = commission;
+        this.players = players;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
