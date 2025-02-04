@@ -2,7 +2,7 @@ package com.testask.footballmanager.exception.handler;
 
 import com.testask.footballmanager.exception.PlayerNotFoundException;
 import com.testask.footballmanager.exception.TeamNotFoundException;
-import com.testask.footballmanager.model.Team;
+import com.testask.footballmanager.exception.TeamNotSolventException;
 import com.testask.footballmanager.model.dto.ErrorResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class FootballManagerExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handlePlayerNotFoundException(PlayerNotFoundException ex, HttpServletRequest request) {
 
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
-                HttpStatus.NOT_FOUND,
+                HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(),
                 request.getRequestURI(),
                 LocalDateTime.now()
@@ -32,7 +32,7 @@ public class FootballManagerExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleTeamNotFoundException(TeamNotFoundException ex, HttpServletRequest request) {
 
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
-                HttpStatus.NOT_FOUND,
+                HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(),
                 request.getRequestURI(),
                 LocalDateTime.now()
@@ -41,11 +41,24 @@ public class FootballManagerExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    @ExceptionHandler(TeamNotSolventException.class)
+    public ResponseEntity<ErrorResponseDTO> handleTeamNotSolventException(TeamNotSolventException ex, HttpServletRequest request) {
+
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                request.getRequestURI(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponseDTO> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
 
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
                 request.getRequestURI(),
                 LocalDateTime.now()
@@ -58,7 +71,7 @@ public class FootballManagerExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleRuntimeException(RuntimeException ex, HttpServletRequest request) {
 
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
-                HttpStatus.INTERNAL_SERVER_ERROR,
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 ex.getMessage(),
                 request.getRequestURI(),
                 LocalDateTime.now()

@@ -28,6 +28,22 @@ public class Team {
 
     private Integer commission;
 
+    private Double balance;
+
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Player> players;
+
+    public void addPlayer(Player player) {
+        this.players.add(player);
+    }
+
+    public void transferPlayer(Player player, Team newTeam, Double transferSum) {
+
+        players.remove(player);
+        player.setTeam(newTeam);
+        newTeam.addPlayer(player);
+
+        newTeam.balance -= transferSum;
+        this.balance += transferSum;
+    }
 }
