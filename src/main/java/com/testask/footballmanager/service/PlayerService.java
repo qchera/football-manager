@@ -1,22 +1,24 @@
 package com.testask.footballmanager.service;
 
-import com.testask.footballmanager.model.Player;
+import com.testask.footballmanager.model.dto.PlayerDTO;
 
 import java.util.List;
 
 public interface PlayerService {
 
-    void createPlayer(Player player);
+    PlayerDTO createPlayer(PlayerDTO playerDTO);
 
-    List<Player> getAllPlayers();
+    List<PlayerDTO> getAllPlayers();
 
-    Player getPlayerById(Long id);
+    PlayerDTO getPlayerById(Long id);
 
-    Player getPlayerByName(String name);
+    PlayerDTO getPlayerByName(String name);
 
-    List<Player> getPlayersByTeamId(Long teamId);
+    List<PlayerDTO> getPlayersByTeamId(Long teamId);
 
-    void updatePlayer(Player player);
+    PlayerDTO updatePlayer(PlayerDTO playerDTO);
+
+    PlayerDTO updatePlayer(PlayerDTO playerDTO, boolean isTransfer);
 
     void deletePlayerById(Long id);
 }

@@ -12,13 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Player {
 
-    public Player(String name, Integer age, Integer experience, Team team) {
-        this.name = name;
-        this.age = age;
-        this.experience = experience;
-        this.team = team;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +22,7 @@ public class Player {
 
     private Integer experience;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "team_id")
     private Team team;
 }

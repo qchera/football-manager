@@ -1,7 +1,9 @@
 package com.testask.footballmanager.service.impl;
 
 import com.testask.footballmanager.exception.TeamNotFoundException;
+import com.testask.footballmanager.mapper.TeamMapper;
 import com.testask.footballmanager.model.Team;
+import com.testask.footballmanager.model.dto.TeamDTO;
 import com.testask.footballmanager.repository.TeamRepository;
 import com.testask.footballmanager.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +18,13 @@ public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository repository;
 
+    private final TeamMapper teamMapper;
+
     @Transactional
     @Override
-    public void createTeam(Team team) {
+    public TeamDTO createTeam(TeamDTO teamDTO) {
+
+        Team team = teamMapper.toTeam(teamDTO);
 
         validateTeam(team);
 
@@ -26,38 +32,55 @@ public class TeamServiceImpl implements TeamService {
             throw new IllegalArgumentException("Team with name '" + team.getName() + "' already exists");
         }
 
-        repository.save(team);
+        // set proper team to each player to not throw any exception
+        team.getPlayers().forEach(player -> player.setTeam(team));
+
+        Team savedTeam = repository.save(team);
+
+        return teamMapper.toTeamDTO(savedTeam);
     }
 
     @Override
-    public List<Team> getAllTeams() {
-        return repository.findAll();
+    public List<TeamDTO> getAllTeams() {
+        return teamMapper.toTeamDTOList(repository.findAll());
     }
 
     @Override
-    public Team getTeamById(Long id) {
-        return repository.findById(id).orElseThrow(
-                () -> new TeamNotFoundException("Team with id '" + id + "' not found")
-        );
+    public TeamDTO getTeamById(Long id) {
+
+        Team team = repository.findById(id).orElseThrow(
+                () -> new TeamNotFoundException("Team with id '" + id + "' not found"));
+
+        return teamMapper.toTeamDTO(team);
     }
 
     @Override
-    public Team getTeamByName(String name) {
-        return repository.findByName(name).orElseThrow(
-                () -> new TeamNotFoundException("Team with name '" + name + "' not found")
-        );
+    public TeamDTO getTeamByName(String name) {
+
+        Team team = repository.findByName(name).orElseThrow(
+                () -> new TeamNotFoundException("Team with name '" + name + "' not found"));
+
+        return teamMapper.toTeamDTO(team);
     }
 
     @Transactional
     @Override
-    public void updateTeam(Team team) {
+    public TeamDTO updateTeam(TeamDTO teamDTO) {
+
+        // crude way to ignore players changes
+        // alternative is just to set this club's name to each player, but then this method will update not only team but players as well !SRP
+        teamDTO.setPlayers(null);
+
+        Team team = teamMapper.toTeam(teamDTO);
 
         validateTeam(team);
 
         repository.findById(team.getId()).orElseThrow(
                 () -> new TeamNotFoundException("Team with id '" + team.getId() + "' not found"));
 
-        repository.save(team);
+        Team updatedTeam = repository.save(team);
+
+        return teamMapper.toTeamDTO(updatedTeam);
     }
 
     @Transactional

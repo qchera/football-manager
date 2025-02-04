@@ -1,20 +1,20 @@
 package com.testask.footballmanager.service;
 
-import com.testask.footballmanager.model.Team;
+import com.testask.footballmanager.model.dto.TeamDTO;
 
 import java.util.List;
 
 public interface TeamService {
 
-    void createTeam(Team team);
+    TeamDTO createTeam(TeamDTO teamDTO);
 
-    List<Team> getAllTeams();
+    List<TeamDTO> getAllTeams();
 
-    Team getTeamById(Long id);
+    TeamDTO getTeamById(Long id);
 
-    Team getTeamByName(String name);
+    TeamDTO getTeamByName(String name);
 
-    void updateTeam(Team team);
+    TeamDTO updateTeam(TeamDTO teamDTO);
 
     void deleteTeam(Long id);
 }
